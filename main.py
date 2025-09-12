@@ -9,6 +9,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import root_mean_squared_error
+from sklearn.model_selection import cross_val_score
 
 # 1. reading the data
 housing = pd.read_csv('housing.csv')
@@ -64,20 +65,51 @@ housing_prepared = full_pipline.fit_transform(housing)
 lin_reg = LinearRegression()
 lin_reg.fit(housing_prepared , housing_labels)
 lin_preds = lin_reg.predict(housing_prepared)
-lin_rmse = root_mean_squared_error(housing_labels , lin_preds)
-print(f"linearregresion = {lin_rmse}")
+# lin_rmse = root_mean_squared_error(housing_labels , lin_preds)
+# print(f"linearregresion = {lin_rmse}")
+lin_rmses = -cross_val_score(
+    lin_reg,
+    housing_prepared,
+    housing_labels,
+    scoring="neg_root_mean_squared_error",
+    cv=10
+)
+
+print(pd.Series(lin_rmses).describe())
+
+
 
 # decison tree  regresion 
 dec_reg = DecisionTreeRegressor()
 dec_reg.fit(housing_prepared , housing_labels)
 dec_preds = dec_reg.predict(housing_prepared)
-dec_rmse = root_mean_squared_error(housing_labels , dec_preds)
-print(f"decisiontree = {dec_rmse}")
+# dec_rmse = root_mean_squared_error(housing_labels , dec_preds)
+# print(f"decisiontree = {dec_rmse}")
+dec_rmses = -cross_val_score(
+    dec_reg,
+    housing_prepared,
+    housing_labels,
+    scoring="neg_root_mean_squared_error",
+    cv=10
+)
+
+print(pd.Series(dec_rmses).describe())
+
 
 # random forest regresion 
 ran_reg = RandomForestRegressor()
 ran_reg.fit(housing_prepared , housing_labels)
 ran_preds = ran_reg.predict(housing_prepared)
-ran_rmse = root_mean_squared_error(housing_labels , ran_preds)
-print(f"randomforest = {ran_rmse}")
+# ran_rmse = root_mean_squared_error(housing_labels , ran_preds)
+# print(f"randomforest = {ran_rmse}")
+ran_rmses = -cross_val_score(
+    ran_reg,
+    housing_prepared,
+    housing_labels,
+    scoring="neg_root_mean_squared_error",
+    cv=10
+)
+
+print(pd.Series(ran_rmses).describe())
+
 
