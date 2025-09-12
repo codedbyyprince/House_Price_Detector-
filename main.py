@@ -27,9 +27,28 @@ housing = strat_train.copy()
 housing_labels = housing['median_house_value'].copy()
 housing = housing.drop("median_house_value", axis=1)
 
-print(housing, housing_labels)
+# print(housing, housing_labels)
 
 # 4 seprte numerical and categorial columns 
 num_attribs = housing.drop('ocean_proximity', axis=1).columns.tolist()
 cat_atribs = ["ocean_proximity"]
 
+# lets make the pipline 
+num_pipline = Pipeline([
+    ("imputer" , SimpleImputer(strategy="median")),
+    ("scaler" , StandardScaler())
+])
+
+cat_pipline = Pipeline([
+    ("onehot" , OneHotEncoder(handle_unknown="ignore"))
+])
+
+# constructing full pipline 
+full_pipline = ColumnTransformer([
+    ("num" , num_pipline, num_attribs),
+    ("cat", cat_pipline, cat_atribs)    
+    ])
+
+# 6. transform the data
+housing_prepared = full_pipline.fit_transform(housing)
+print(housing_prepared)
