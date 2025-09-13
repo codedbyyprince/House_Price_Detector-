@@ -64,3 +64,13 @@ if not os.path.exists(MODEL_FILE):
     joblib.dump(pipline , PIPLINE_FILE)
 
     print("CONGRATS! MODEL IS TRAINED ")
+else:
+    #  lets inference
+    model = joblib.load(MODEL_FILE)
+    pipline = joblib.load(PIPLINE_FILE)
+    input_data = pd.read_csv('input.csv')
+    transformed_input = pipline.transform(input_data)
+    prediction = model.predict(transformed_input)
+    input_data['median_house_value'] = prediction
+    input_data.to_csv('output.csv', index = False)
+    print("inference is completed")
